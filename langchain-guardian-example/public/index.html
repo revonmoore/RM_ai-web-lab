@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>RAG Resume Analyzer</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 24px; max-width: 900px; }
+      .card { border: 1px solid #ccc; border-radius: 10px; padding: 16px; margin-top: 16px; }
+      pre { white-space: pre-wrap; word-wrap: break-word; }
+      button { padding: 10px 14px; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <h1>RAG Resume Analyzer (Task 6)</h1>
+
+    <p>Upload a PDF resume. The server will extract text and run two analyses:</p>
+    <ul>
+      <li><b>Hiring Manager Praise</b></li>
+      <li><b>Critical Review</b></li>
+    </ul>
+
+    <form id="uploadForm">
+      <input type="file" name="resume" accept="application/pdf" required />
+      <button type="submit">Analyze</button>
+    </form>
+
+    <div class="card">
+      <h2>Status</h2>
+      <pre id="status">Waiting for upload...</pre>
+    </div>
+
+    <div class="card">
+      <h2>Hiring Manager Perspective (Pros)</h2>
+      <pre id="pros"></pre>
+    </div>
+
+    <div class="card">
+      <h2>Critical Review (Cons & Gaps)</h2>
+      <pre id="cons"></pre>
+    </div>
+
+    <script>
+      const form = document.getElementById("uploadForm");
+      const statusEl = document.getElementById("status");
+      const prosEl = document.getElementById("pros");
+      const consEl = document.getElementById("cons");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        prosEl.textContent = "";
+        consEl.textContent = "";
+        statusEl.textContent = "Uploading & analyzing...";
+
+        const fileInput = form.querySelector('input[type="file"]');
+        const fd = new FormData();
+        fd.append("resume", fileInput.files[0]);
+
+        try {
+          const res = await fetch("/analyze", {
+            method: "POST",
+            body: fd
+          });
+
+          const data = await res.json();
+
+          if (!res.ok) {
+            statusEl.textContent = "Error from server:\n" + (data.error || "Unknown error");
+            return;
+          }
+
+          statusEl.textContent = "Done.";
+          prosEl.textContent = data.praising || "";
+          consEl.textContent = data.critical || "";
+        } catch (err) {
+          statusEl.textContent = "Client error:\n" + err.message;
+        }
+      });
+    </script>
+  </body>
+</html>

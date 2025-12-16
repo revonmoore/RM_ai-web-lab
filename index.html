@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Unit 8: Intro to AI with TensorFlow.js</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.16.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <h1>Unit 8: Intro to AI with TensorFlow.js</h1>
+
+  <div class="card">
+    <h2>Image Classification Demo</h2>
+
+    <!-- ✅ your dog image -->
+    <img
+      id="img"
+      src="./img/dog_task1.png"
+      alt="Dog Image"
+    />
+
+    <p id="prediction">Model's Prediction: Loading...</p>
+
+    <button onclick="classifyImage()">Classify Image</button>
+  </div>
+
+  <script>
+    let model;
+
+    async function loadModel() {
+      console.log("Loading model...");
+      model = await mobilenet.load();
+      console.log("Model loaded successfully!");
+      classifyImage();
+    }
+
+    async function classifyImage() {
+      const img = document.getElementById("img");
+      const predictions = await model.classify(img);
+
+      console.log("Predictions:", predictions);
+
+      const top = predictions[0];
+      document.getElementById("prediction").innerText =
+        `Model's Prediction: ${top.className} (Probability: ${(top.probability * 100).toFixed(2)}%)`;
+    }
+
+    loadModel();
+  </script>
+
+</body>
+</html>

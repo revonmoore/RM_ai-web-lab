@@ -1,0 +1,24 @@
+{
+  "name": "langchain-guardian-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "rag": "node index2.js",
+    "web": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@langchain/core": "^0.3.0",
+    "@langchain/openai": "^0.6.0",
+    "dotenv": "^17.2.0",
+    "express": "^5.2.1",
+    "langchain": "^0.2.20",
+    "multer": "^2.0.2",
+    "pdf-parse": "^2.4.5"
+  }
+}
